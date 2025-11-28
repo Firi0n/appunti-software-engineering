@@ -1,0 +1,50 @@
+name: Deploy MkDocs to GitHub Pages
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          echo "🔨 Building Docker image..."
+          docker build -t mkdocs-site . || { echo "❌ Docker build failed"; exit 1; }
+          echo "✅ Docker image built successfully"
+
+      - name: Run MkDocs build and output _site
+        run: |
+          echo "🏗️ Running MkDocs build..."
+          docker run --rm -v $(pwd)/_site:/app/_site mkdocs-site mkdocs build --site-dir /app/_site || { echo "❌ MkDocs build failed"; exit 1; }
+          echo "✅ MkDocs site built successfully"
+
+      - name: List built site files
+        run: ls -la ./_site/
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

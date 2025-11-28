@@ -1,0 +1,55 @@
+name: 🔄 Sync Template Updates
+on:
+  workflow_dispatch: # Manual trigger button in GitHub Actions
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout current repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # Full history for git operations
+
+      - name: 🔗 Add template remote
+        run: |
+          git remote add template https://github.com/Firi0n/MkDocs-setup.git
+          git fetch template main:template-update
+
+      - name: 🔄 Safe sync files
+        run: |
+          # ✅ ALWAYS update core config files
+          git checkout template-update -- mkdocs.yml requirements.txt Dockerfile .dockerignore
+          git add mkdocs.yml requirements.txt Dockerfile .dockerignore
+
+          # ✅ ALWAYS update docs core (index page)
+          git checkout template-update -- docs/index.md
+          git add docs/index.md
+
+          # ⚠️ docs/overrides/ → only if empty or missing
+          if [ ! -d "docs/overrides" ] || [ -z "$(ls -A docs/overrides 2>/dev/null)" ]; then
+            echo "✅ Updating empty/missing docs/overrides/"
+            git checkout template-update -- docs/overrides/
+          else
+            echo "⏭️  Skipping docs/overrides/ (user customizations detected)"
+          fi
+          git add docs/overrides/ || true
+
+      - name: 💾 Commit & Push
+        run: |
+          git config user.name "Template Sync Bot"
+          git config user.email "bot@github.com"
+
+          if git diff --staged --quiet; then
+            echo "ℹ️  No changes to commit"
+          else
+            git commit -m "🔄 Sync template updates from Firi0n/MkDocs-setup
+
+          - mkdocs.yml, requirements.txt, Docker files
+          - docs/index.md
+          - docs/overrides/ (only if empty)
+
+          $(date)"
+            git push
+          fi
