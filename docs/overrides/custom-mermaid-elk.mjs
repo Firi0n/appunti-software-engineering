@@ -6,7 +6,6 @@ mermaid.initialize({
 	startOnLoad: false,
 	securityLevel: "loose",
 	layout: "elk",
-	theme: "dark",
 });
 
 // Important: necessary to make it visible to Material for MkDocs
