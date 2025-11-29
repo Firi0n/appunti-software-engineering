@@ -1,4 +1,4 @@
-site_name: Site name
+site_name: Processo software
 theme:
   name: material
   custom_dir: docs/overrides
