@@ -133,3 +133,57 @@ graph TB
 # stili
 
 ## Pipes & Filter
+
+```mermaid
+---
+config:
+  layout: elk
+---
+flowchart TD
+    PF(Pipes & Filter) -->|consiste|fe[flusso di<br>elaborazione dati]
+    fe -->|viaggiano| Pipe
+    fe -->|processati| Filter
+    PF -->|componenti| Filter
+    PF -->|connettori| Pipe
+
+    Filter -->|ingresso| fl[flusso di dati]
+    Filter -->|uscita| flt[flusso di dati<br>trasformati]
+
+    Pipe --> unidirezionale & bufferizzato & po(preserva ordine<br>dati)
+```
+
+## Client-Server
+
+```mermaid
+---
+config:
+  layout: elk
+---
+flowchart LR
+    Server -->|Aspetta richieste| Client
+    Client -->|Invia richiesta| Server
+```
+
+### Server
+
+```mermaid
+---
+config:
+  layout: elk
+---
+classDiagram
+direction LR
+    class RH["Request<br>Handler"]
+    note for RH "elabora la richiesta e invia la risposta al client"
+    class SfH["Statefull<br>Handler"]
+    note for SfH "consente richieste composite tramite sessione (record delle richieste di un client)"
+    class SlH["Stateless<br>Handler"]
+    note for SlH "gestisce ogni richiesta in modo indipendente"
+    class RL["Request<br>Listener"]
+    note for RL "in attesa di richieste"
+    RL "1" --> "*" RH
+    RH <|-- SfH
+    RH <|-- SlH
+```
+
+### Client
