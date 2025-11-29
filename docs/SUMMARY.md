@@ -1,3 +1,3 @@
 # Documentation
 
-- [readme](readme.md)
+-   [home](index.md)

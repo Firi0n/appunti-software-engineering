@@ -1,4 +1,4 @@
-site_name: Appunti ingegneria del software
+site_name: Site name
 theme:
   name: material
   custom_dir: docs/overrides
