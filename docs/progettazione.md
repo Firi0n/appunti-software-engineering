@@ -155,13 +155,9 @@ flowchart TD
 ## Client-Server
 
 ```mermaid
----
-config:
-  layout: elk
----
-flowchart LR
-    Server -->|Aspetta richieste| Client
-    Client -->|Invia richiesta| Server
+classDiagram
+direction LR
+    Client "*"-->"1" Server: Invia richiesta
 ```
 
 ### Server
@@ -170,13 +166,16 @@ flowchart LR
 ---
 config:
   layout: elk
+  theme: "base"
+  themeVariables:
+    noteBkgColor: "#fff45669"
 ---
 classDiagram
 direction LR
     class RH["Request<br>Handler"]
-    note for RH "elabora la richiesta e invia la risposta al client"
+    note for RH "elabora la richiesta e invia<br>la risposta al client"
     class SfH["Statefull<br>Handler"]
-    note for SfH "consente richieste composite tramite sessione (record delle richieste di un client)"
+    note for SfH "consente richieste composite tramite sessione<br>(record delle richieste di un client)"
     class SlH["Stateless<br>Handler"]
     note for SlH "gestisce ogni richiesta in modo indipendente"
     class RL["Request<br>Listener"]
@@ -186,4 +185,26 @@ direction LR
     RH <|-- SlH
 ```
 
-### Client
+## Master-Slave
+
+```mermaid
+classDiagram
+direction LR
+    Master "1"-->"*" Slave: Invia richiesta
+```
+
+## P2P
+
+```mermaid
+---
+config:
+  layout: elk
+---
+classDiagram
+direction LR
+    class Peer
+    class PeerInterface
+    <<Interface>> PeerInterface
+    Peer ..> PeerInterface: Input port
+    Peer ..|> PeerInterface: Output port
+```

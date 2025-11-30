@@ -3,9 +3,10 @@ import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0/di
 
 mermaid.registerLayoutLoaders(elkLayouts);
 mermaid.initialize({
-	startOnLoad: false,
+	startOnLoad: true,
 	securityLevel: "loose",
 	layout: "elk",
+	theme: "default",
 });
 
 // Important: necessary to make it visible to Material for MkDocs
