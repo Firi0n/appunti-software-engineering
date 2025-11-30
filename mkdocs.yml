@@ -1,10 +1,23 @@
 site_name: Processo software
+repo_url: https://github.com/Firi0n/appunti-software-engineering
+repo_name: GitHub
 theme:
   name: material
   custom_dir: docs/overrides
+  icon:
+    previous: fontawesome/solid/angle-left
+    next: fontawesome/solid/angle-right
   features:
     - navigation.sections
+    - navigation.expand
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.instant.preview
+    - navigation.footer
     - toc.integrate # Enable TOC (auto index)
+    - search.suggest
+    - search.highlight
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -52,3 +65,11 @@ extra_javascript:
 
 extra_css:
   - overrides/main.css
+
+copyright: "Copyright &copy; 2025 - 2026 Firi0n"
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Firi0n/
+      name: firi0n on GitHub
