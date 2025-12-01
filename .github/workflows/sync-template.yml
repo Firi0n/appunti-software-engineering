@@ -1,6 +1,7 @@
 name: 🔄 Sync Template Updates
+
 on:
-  workflow_dispatch: # Manual trigger button in GitHub Actions
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -10,46 +11,33 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0 # Full history for git operations
+          fetch-depth: 0
 
       - name: 🔗 Add template remote
         run: |
           git remote add template https://github.com/Firi0n/MkDocs-setup.git
-          git fetch template main:template-update
+          git fetch template main
 
-      - name: 🔄 Safe sync files
+      - name: 🌿 Create temporary branch and try merge
         run: |
-          # ✅ ALWAYS update core config files
-          git checkout template-update -- mkdocs.yml requirements.txt Dockerfile .dockerignore
-          git add mkdocs.yml requirements.txt Dockerfile .dockerignore
+          git checkout -b sync-temp
+          git merge template/main --no-edit || echo "merge_conflicts=true" >> $GITHUB_ENV
 
-          # ✅ ALWAYS update docs core (index page)
-          git checkout template-update -- docs/index.md
-          git add docs/index.md
-
-          # ⚠️ docs/overrides/ → only if empty or missing
-          if [ ! -d "docs/overrides" ] || [ -z "$(ls -A docs/overrides 2>/dev/null)" ]; then
-            echo "✅ Updating empty/missing docs/overrides/"
-            git checkout template-update -- docs/overrides/
-          else
-            echo "⏭️  Skipping docs/overrides/ (user customizations detected)"
-          fi
-          git add docs/overrides/ || true
-
-      - name: 💾 Commit & Push
+      - name: 🚀 If merge without conflicts, update main branch
+        if: env.merge_conflicts != 'true'
         run: |
-          git config user.name "Template Sync Bot"
-          git config user.email "bot@github.com"
+          git checkout main
+          git merge sync-temp --no-edit
+          git push origin main
 
-          if git diff --staged --quiet; then
-            echo "ℹ️  No changes to commit"
-          else
-            git commit -m "🔄 Sync template updates from Firi0n/MkDocs-setup
-
-          - mkdocs.yml, requirements.txt, Docker files
-          - docs/index.md
-          - docs/overrides/ (only if empty)
-
-          $(date)"
-            git push
-          fi
+      - name: 📬 Create pull request if merge conflicts
+        if: env.merge_conflicts == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Sync template updates with conflicts"
+          branch: sync-temp
+          title: "Template updates require manual merge"
+          body: |
+            Automatic merge failed due to conflicts.
+            Please resolve the conflicts in this pull request.
