@@ -208,3 +208,189 @@ direction LR
     Peer ..> PeerInterface: Input port
     Peer ..|> PeerInterface: Output port
 ```
+
+## Publish-Subscriber
+
+```mermaid
+---
+config:
+  layout: elk
+  theme: "base"
+  themeVariables:
+    noteBkgColor: "#fff45669"
+---
+classDiagram
+direction LR
+    class Publisher-Subscriber
+    <<component>> Publisher-Subscriber
+    note for Publisher-Subscriber "Publisher: produce classi di eventi<br><br>Subscriber: si abbona alle classi di<br>eventi che ritiene rilevanti"
+    class Broker
+    <<component>> Broker
+    note for Broker "Smista gli eventi pubblicati"
+    class SubscriberInterface{
+        +notify()
+    }
+    <<interface>> SubscriberInterface
+    class BrokerInterface{
+        +subscribe()
+        +remove_subscription()
+        +publish()
+    }
+    <<interface>> BrokerInterface
+
+    Publisher-Subscriber -- Broker: Richiesta sottoscrizione/pubblicazione
+    Publisher-Subscriber -- Broker: dati
+    BrokerInterface <.. Publisher-Subscriber
+    SubscriberInterface <|.. Publisher-Subscriber
+    BrokerInterface <|.. Broker
+    SubscriberInterface <.. Broker
+```
+
+### Publisher e Subscriber distinti (PUSH)
+
+```mermaid
+---
+config:
+  layout: elk
+  theme: "base"
+  themeVariables:
+    noteBkgColor: "#fff45669"
+---
+classDiagram
+direction LR
+    class Publisher
+    <<component>> Publisher
+    class Subscriber
+    <<component>> Subscriber
+    class Broker
+    <<component>> Broker
+    class SubscriberInterface{
+        +subscribe()
+        +remove_subscription()
+    }
+    <<interface>> SubscriberInterface
+    class PublishInterface{
+        +publish()
+    }
+    <<interface>> PublishInterface
+    class NotifyInterface{
+        +notify()
+    }
+    <<interface>> NotifyInterface
+
+    SubscriberInterface <|.. Broker
+    SubscriberInterface <.. Subscriber
+    Subscriber ..|> NotifyInterface
+    Broker ..> NotifyInterface
+    Broker ..|> PublishInterface
+    PublishInterface <.. Publisher
+```
+
+## Model-View-Controller
+
+```d2
+    grid-columns: 2
+    style{
+        fill: transparent
+    }
+    *{
+        style{
+            fill: transparent
+        }
+    }
+    classes {
+        *{
+            style{
+                fill: transparent
+                stroke-width: 0
+            }
+        }
+        empty {
+            label: ""
+            style: {
+                fill: transparent
+            }
+        }
+        User{
+            shape: person
+            style.stroke-width: 3
+            height: 120
+        }
+        View{
+            style{
+                fill: lightgreen
+                font-color: green
+            }
+        }
+        Model{
+            style{
+                fill: yellow
+                font-color: darkorange
+            }
+        }
+    }
+    model-view-controller{
+        grid-rows: 3
+        grid-columns: 3
+        vertical-gap: 80
+        style.stroke-width: 0
+        empty1.class:empty
+        user.class: User
+        empty2.class:empty
+        empty3.class:empty
+        view.class:View
+        empty4.class:empty
+        Controller{
+            style{
+                fill: orange
+                font-color: darkred
+                stroke: transparent
+            }
+        }
+        empty5.class:empty
+        model.class:Model
+        user -> view: user interaction
+        view -> controller: passes calls to
+        controller -> model: manipulates
+        model -> view: fire events {
+            style{
+                stroke-dash: 3
+            }
+        }
+    }
+    model-view-presenter {
+        style.stroke-width: 0
+        user.class: User
+        view.class:View
+        Presenter{
+            style{
+                fill: lightblue
+                font-color: blue
+                stroke: transparent
+            }
+        }
+        model.class:Model
+
+        user -> view: user interaction
+        view -> Presenter: passes calls to
+        Presenter -> model: manipulates
+        Presenter -> view: updates
+        model -> Presenter: fire events {
+            style{
+                stroke-dash: 3
+            }
+        }
+    }
+```
+
+## Process coordinator
+
+```mermaid
+---
+config:
+    layout: elk
+---
+classDiagram
+direction LR
+Coordinator "1"-->"1..*" Component:Invoca
+```
