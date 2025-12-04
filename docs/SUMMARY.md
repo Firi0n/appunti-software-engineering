@@ -2,5 +2,6 @@
 -   [Analisi dei requisiti](./analisi_requisiti.md)
 -   [Progettazione](./progettazione.md)
     -   [Principi di progettazione](./principi_progettazione.md)
+    -   [Design Patterns](./design-patterns.md)
 -   Casi studio
     -   [UniRoomShare](./UniRoomShare/UniRoomShare.md)

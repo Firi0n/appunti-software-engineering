@@ -13,37 +13,11 @@ flowchart TD
     manutenibilità --tipi--> correttiva[correttiva<br>20%] & migliorativa
     migliorativa --> perfettiva[perfettiva<br>60%] & adattiva[adattiva<br>20%]
 
-    PP --> PG
+    PP --> PG[<a href="#principi-generali">Principi generali</a>]
 
-    subgraph PG[Principi generali]
-        IH[Information hiding] ~~~
-        ADC[Astrazione di dati<br>e controllo] ~~~
-        Coesione ~~~
-        Disaccoppiamento
-    end
+    PP --> CP[Collezioni di principi] --> SOLID[<a href="#solid">SOLID</a>] & GRASP[<a href="#grasp">GRASP</a>]
 
-    PP --> CP[Collezioni di principi] --> SOLID & GRASP
-    subgraph SOLID
-        S[Single Responsibility] ~~~
-        O[Open Closed] ~~~
-        L[Liskov Substitution] ~~~
-        I[Interface Segregation] ~~~
-        D[Dependency Inversion]
-    end
-
-    subgraph GRASP
-        General ~~~
-        Responsibility ~~~
-        Assignment ~~~
-        Software ~~~
-        Patterns
-    end
-
-    PP --> DP
-
-    subgraph DP[Design patterns]
-        bo
-    end
+    PP --> DP[<a href="/design-patterns">Design<br>Patterns</a>]
 ```
 
 # Principi generali
@@ -180,6 +154,15 @@ config:
     }
 ---
 graph LR
+    GRASP --> acronimo
+    subgraph acronimo
+    direction TB
+        General ~~~
+        Responsibility ~~~
+        Assignment ~~~
+        Software ~~~
+        Patterns
+    end
     GRASP -- guidato dai -->CU[casi<br>d'uso]
     GRASP --> su[si usano] --> di[diagrammi<br>di interazione] & pattern
     GRASP -- si assegnano --> responsabilità -- alle --> classi
@@ -192,5 +175,3 @@ graph LR
     conoscere --> dati & OC[oggetti<br>collegati]
     metodi -- implementati<br>per soddisfare --> responsabilità
 ```
-
-# Design Patterns
